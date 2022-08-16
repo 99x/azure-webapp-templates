@@ -1,10 +1,10 @@
 targetScope='subscription'
 
 param resource_group_name string = 'webapp-templates'
-param location string = 'southeastasia'
+param location string = 'eastasia'
 param app_service_plan_name string = 'webapp-template-app-plan'
 param app_service_name string = 'webapp-template-app'
-param sku string = 'B1'
+param sku string = 'F1'
 param linux_fx_version string = 'DOTNETCORE:6.0'
 param tags object = {
   CreatedBy:'sachiths@99x.io'
