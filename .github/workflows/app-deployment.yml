@@ -1,19 +1,25 @@
 name: Build and Deploy .NET Application
 
 env:
-  AZURE_WEBAPP_NAME: myapp1212    
+  AZURE_WEBAPP_NAME: ''    
+  AZURE_PRODUCTION_WEBAPP_NAME: ''
   AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '6.0'
+  DEV_APP_SERVICE_URL: ''
+  PRODUCTION_APP_SERVICE_URL: ''
 
 on:
-  push:
+  pull_request:
     branches:
-      - feature/add_cicd_pipeline
+      - master
     paths:
       - azure-app-service-vnet-template/Source/**  
+    types: 
+      - closed
 
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     name: build
     runs-on:  ubuntu-latest
     steps:
@@ -39,14 +45,14 @@ jobs:
           name: webapp
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-  deploy:
+  deploy-to-dev:
     needs: build
     runs-on: ubuntu-latest
 
-    environment:
-      name: 'Development'
-      url: 'https://myapp1212.azurewebsites.net'    
-  
+    environment: 
+      name: 'development'
+      url: ${{ env.DEV_APP_SERVICE_URL }}
+
     steps:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v2.0.8
@@ -65,6 +71,38 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      
+      - name: Logout
+        run: |
+          az logout
+    
+  deploy-to-production:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment: 
+      name: 'production'
+      url: ${{ env.PRODUCTION_APP_SERVICE_URL }}
+    
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: webapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      # Signing in to Azure
+      - name: Signing in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_PRODUCTION_CREDENTIALS }}
+          
+      # Deploy to Azure Web apps
+      - name: Run Azure webapp deploy action using service principal
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_PRODUCTION_WEBAPP_NAME }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       
       - name: Logout
