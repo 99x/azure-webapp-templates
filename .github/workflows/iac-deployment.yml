@@ -19,6 +19,6 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         scope: subscription
-        region: eastus
+        region: southeastasia
         template: ./azure-app-service-vnet-template/Infrastructure/main.bicep
         failOnStdErr: false
