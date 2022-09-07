@@ -27,11 +27,12 @@ jobs:
     # if: github.event.pull_request.merged == true
     name: build
     runs-on:  ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal
     steps:
       # Checkout the repo
-      - uses: Bhacaz/checkout-files@v2
-        with:
-          files: azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal
+      - uses: actions/checkout@master
       
       # Setup .NET SDK
       - name: Setup dotnet
