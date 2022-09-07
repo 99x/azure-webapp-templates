@@ -45,13 +45,13 @@ jobs:
         run: |
           dotnet restore
           dotnet build --no-restore -c Release
-          dotnet publish -c Release --no-build -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp'
+          dotnet publish -c Release --no-build -o ./todoapp
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
         with: 
           name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          path: ./todoapp
 
   deploy-to-dev:
     needs: build
