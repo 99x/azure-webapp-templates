@@ -29,6 +29,13 @@ jobs:
     runs-on:  ubuntu-latest
     
     steps:
+      - name: Wait for infrastructure deployment to succeed
+        uses: lewagon/wait-on-check-action@v1.0.0
+        with:
+          ref: ${{ github.ref }}
+          check-name: 'Azure ARM'
+          wait-interval: 300
+
       # Checkout the repo
       - uses: actions/checkout@master
       
@@ -41,9 +48,7 @@ jobs:
       # Run dotnet build
       - name: Restore dependencies and build application
         run: |
-          dotnet restore ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} 
-          dotnet build ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore -c Release
-          dotnet publish ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -c Release --no-build -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          dotnet publish ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
