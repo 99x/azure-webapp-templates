@@ -29,7 +29,9 @@ jobs:
     runs-on:  ubuntu-latest
     steps:
       # Checkout the repo
-      - uses: actions/checkout@master
+      - uses: Bhacaz/checkout-files@v2
+        with:
+          files: ./azure-app-service-vnet-template/Source/TodoApp
       
       # Setup .NET SDK
       - name: Setup dotnet
