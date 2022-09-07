@@ -44,8 +44,8 @@ jobs:
       - name: Restore dependencies and build application
         run: |
           dotnet restore
-          dotnet build --no-restore -c Release
-          dotnet publish -c Release --no-build -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          dotnet build ./azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal --no-restore -c Release
+          dotnet publish -c Release --no-build
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
