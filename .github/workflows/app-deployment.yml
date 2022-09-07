@@ -8,14 +8,19 @@ env:
   DEV_APP_SERVICE_URL: 'https://webapp-template-app.azurewebsites.net'
   PRODUCTION_APP_SERVICE_URL: ''
 
-on:
-  pull_request:
-    branches:
-      - master
-    paths:
-      - azure-app-service-vnet-template/Source/**  
-    types: 
-      - closed
+# on:
+#   pull_request:
+#     branches:
+#       - master
+#     paths:
+#       - azure-app-service-vnet-template/Source/**  
+#     types: 
+#       - closed
+
+  on: 
+    push:
+      branches:
+        - feature/add_cicd_pipeline
 
 jobs:
   build:
@@ -77,34 +82,34 @@ jobs:
         run: |
           az logout
     
-  deploy-to-production:
-    needs: build
-    runs-on: ubuntu-latest
+  # deploy-to-production:
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
-    environment: 
-      name: 'production'
-      url: ${{ env.PRODUCTION_APP_SERVICE_URL }}
+  #   environment: 
+  #     name: 'production'
+  #     url: ${{ env.PRODUCTION_APP_SERVICE_URL }}
     
-    steps:
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v2.0.8
-        with:
-          name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+  #   steps:
+  #     - name: Download Build Artifacts
+  #       uses: actions/download-artifact@v2.0.8
+  #       with:
+  #         name: webapp
+  #         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-      # Signing in to Azure
-      - name: Signing in to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_PRODUCTION_CREDENTIALS }}
+  #     # Signing in to Azure
+  #     - name: Signing in to Azure
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_PRODUCTION_CREDENTIALS }}
           
-      # Deploy to Azure Web apps
-      - name: Run Azure webapp deploy action using service principal
-        uses: azure/webapps-deploy@v2
-        with: 
-          app-name: ${{ env.AZURE_PRODUCTION_WEBAPP_NAME }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+  #     # Deploy to Azure Web apps
+  #     - name: Run Azure webapp deploy action using service principal
+  #       uses: azure/webapps-deploy@v2
+  #       with: 
+  #         app-name: ${{ env.AZURE_PRODUCTION_WEBAPP_NAME }}
+  #         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       
-      - name: Logout
-        run: |
-          az logout
+  #     - name: Logout
+  #       run: |
+  #         az logout
