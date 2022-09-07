@@ -1,11 +1,11 @@
 name: Build and Deploy .NET Application
 
 env:
-  AZURE_WEBAPP_NAME: ''    
-  AZURE_PRODUCTION_WEBAPP_NAME: ''
+  AZURE_WEBAPP_NAME: 'webapp-template-app'    
+  AZURE_PRODUCTION_WEBAPP_NAME: 'webapp-template-app-production'
   AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '6.0'
-  DEV_APP_SERVICE_URL: ''
+  DEV_APP_SERVICE_URL: 'https://webapp-template-app.azurewebsites.net'
   PRODUCTION_APP_SERVICE_URL: ''
 
 on:
