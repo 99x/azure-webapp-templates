@@ -1,4 +1,9 @@
 on: [push]
+  branches:
+    - master
+  paths:
+    - azure-app-service-vnet-template/Infrastructure/**
+
 name: Azure ARM
 jobs:
   build-and-deploy:
