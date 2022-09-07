@@ -8,6 +8,11 @@ env:
   DEV_APP_SERVICE_URL: 'https://webapp-template-app.azurewebsites.net'
   PRODUCTION_APP_SERVICE_URL: ''
 
+on: 
+  push:
+    branches:
+      - feature/add_cicd_pipeline
+
 # on:
 #   pull_request:
 #     branches:
@@ -16,11 +21,6 @@ env:
 #       - azure-app-service-vnet-template/Source/**  
 #     types: 
 #       - closed
-
-  on: 
-    push:
-      branches:
-        - feature/add_cicd_pipeline
 
 jobs:
   build:
