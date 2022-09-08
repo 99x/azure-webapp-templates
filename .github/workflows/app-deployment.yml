@@ -3,7 +3,7 @@ name: Build and Deploy .NET Application
 env:
   AZURE_WEBAPP_NAME: 'TodoApp.Portal'    
   AZURE_PRODUCTION_WEBAPP_NAME: 'webapp-template-app-production'
-  AZURE_WEBAPP_PACKAGE_PATH: 'azure-app-service-vnet-template/Source/TodoApp/'
+  AZURE_WEBAPP_PACKAGE_PATH: './azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal/'
   DOTNET_VERSION: '6.0'
   DEV_APP_SERVICE_URL: 'https://webapp-template-app.azurewebsites.net'
 
@@ -42,7 +42,7 @@ jobs:
         run: |
           dotnet restore
           dotnet build ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore -c Release
-          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp' 
+          dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
