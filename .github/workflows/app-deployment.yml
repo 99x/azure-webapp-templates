@@ -3,13 +3,14 @@ name: Build and Deploy .NET Application
 env:
   AZURE_WEBAPP_NAME: 'webapp-template-app'    
   AZURE_PRODUCTION_WEBAPP_NAME: 'webapp-template-app-production'
-  AZURE_WEBAPP_PACKAGE_PATH: './azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal/'
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
   DOTNET_VERSION: '6.0'
+  DEV_APP_SERVICE_URL: 'https://webapp-template-app.azurewebsites.net'
 
 on: 
   push:
     branches:
-      - feature/add_cicd_pipeline
+      - feature/add_cicd_changes
 
 # on:
 #   pull_request:
@@ -39,7 +40,9 @@ jobs:
       # Run dotnet build
       - name: Restore dependencies and build application
         run: |
-          dotnet publish ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          dotnet restore
+          dotnet build --no-restore -c Release
+          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp' 
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
@@ -47,13 +50,13 @@ jobs:
           name: webapp
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
 
-  deploy-to-dev:
+  deploy:
     needs: build
     runs-on: ubuntu-latest
 
-    # environment: 
-    #   name: 'development'
-    #   url: ${{ env.DEV_APP_SERVICE_URL }}
+    environment: 
+      name: 'development'
+      url: ${{ env.DEV_APP_SERVICE_URL }}
 
     steps:
       - name: Download Build Artifacts
