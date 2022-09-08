@@ -42,7 +42,7 @@ jobs:
         run: |
           dotnet restore
           dotnet build --no-restore -c Release
-          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp' 
+          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp' 
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
@@ -63,7 +63,7 @@ jobs:
         uses: actions/download-artifact@v2.0.8
         with:
           name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
 
       # Signing in to Azure
       - name: Signing in to Azure
@@ -76,7 +76,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
       
       - name: Logout
         run: |
