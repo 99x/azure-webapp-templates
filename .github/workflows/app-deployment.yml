@@ -1,7 +1,7 @@
 name: Build and Deploy .NET Application
 
 env:
-  AZURE_WEBAPP_NAME: 'webapp-template-app'    
+  AZURE_WEBAPP_NAME: 'TodoApp.Portal'    
   AZURE_PRODUCTION_WEBAPP_NAME: 'webapp-template-app-production'
   AZURE_WEBAPP_PACKAGE_PATH: './azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal/'
   DOTNET_VERSION: '6.0'
@@ -41,7 +41,7 @@ jobs:
       - name: Restore dependencies and build application
         run: |
           dotnet restore
-          dotnet build --no-restore -c Release
+          dotnet build  **/*.csproj --no-restore -c Release
           dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp' 
 
       - name: Publish artifacts to repository location
