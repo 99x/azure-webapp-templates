@@ -40,7 +40,7 @@ jobs:
       # Run dotnet build
       - name: Restore dependencies and build application
         run: |
-          dotnet restore
+          dotnet restore ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
           dotnet build ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore -c Release
           dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
 
