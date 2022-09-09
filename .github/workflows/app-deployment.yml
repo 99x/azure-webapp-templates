@@ -43,7 +43,7 @@ jobs:
           dotnet restore ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
           cd ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
           dotnet build --no-restore -c Release
-          dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
+          dotnet publish -c Release -o ./todoapp
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
