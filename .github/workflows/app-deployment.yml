@@ -1,11 +1,11 @@
 name: Build and Deploy .NET Application
 
 env:
-  AZURE_WEBAPP_NAME: 'TodoApp.Portal'    
+  AZURE_WEBAPP_NAME: 'webapp-templates-dev-app'    
   AZURE_PRODUCTION_WEBAPP_NAME: 'webapp-template-app-production'
   AZURE_WEBAPP_PACKAGE_PATH: './azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal/'
   DOTNET_VERSION: '6.0'
-  DEV_APP_SERVICE_URL: 'https://webapp-template-app.azurewebsites.net'
+  DEV_APP_SERVICE_URL: 'https://webapp-templates-dev-app.azurewebsites.net'
 
 on: 
   push:
@@ -48,7 +48,7 @@ jobs:
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
         with: 
-          name: ${{ env.AZURE_WEBAPP_NAME }}
+          name: webapp
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
 
   deploy:
