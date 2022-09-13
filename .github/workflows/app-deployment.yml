@@ -1,15 +1,16 @@
 name: Build and Deploy .NET Application
 
 env:
-  AZURE_WEBAPP_NAME: 'webapp-template-app'    
+  AZURE_WEBAPP_NAME: 'webapp-templates-dev-app'    
   AZURE_PRODUCTION_WEBAPP_NAME: 'webapp-template-app-production'
   AZURE_WEBAPP_PACKAGE_PATH: './azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal/'
   DOTNET_VERSION: '6.0'
+  DEV_APP_SERVICE_URL: 'https://webapp-templates-dev-app.azurewebsites.net'
 
 on: 
   push:
     branches:
-      - feature/add_cicd_pipeline
+      - feature/add_cicd_changes
 
 # on:
 #   pull_request:
@@ -40,29 +41,30 @@ jobs:
       - name: Restore dependencies and build application
         run: |
           dotnet restore ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-          dotnet build ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore -c Release
-          dotnet publish ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-build -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          cd ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          dotnet build --no-restore -c Release
+          dotnet publish -c Release -o ./todoapp
 
       - name: Publish artifacts to repository location
         uses: actions/upload-artifact@v2.2.2
         with: 
           name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
 
   deploy-to-dev:
     needs: build
     runs-on: ubuntu-latest
 
-    # environment: 
-    #   name: 'development'
-    #   url: ${{ env.DEV_APP_SERVICE_URL }}
+    environment: 
+      name: 'development'
+      url: ${{ env.DEV_APP_SERVICE_URL }}
 
     steps:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v2.0.8
         with:
           name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
 
       # Signing in to Azure
       - name: Signing in to Azure
@@ -75,7 +77,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/todoapp
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
       
       - name: Logout
         run: |
