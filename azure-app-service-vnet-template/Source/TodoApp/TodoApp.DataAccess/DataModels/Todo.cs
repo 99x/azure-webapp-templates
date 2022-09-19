@@ -16,6 +16,6 @@ namespace TodoApp.DataAccess.DataModels
         public DateTime CreatedTime { get; set; }
         public DateTime? CompletedTime { get; set; }
         [Required]
-        public string CreatedUser { get; set; }
+        public long CreatedUser { get; set; }
     }
 }

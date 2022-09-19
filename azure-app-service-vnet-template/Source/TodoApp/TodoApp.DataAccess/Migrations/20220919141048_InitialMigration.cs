@@ -20,11 +20,26 @@ namespace TodoApp.DataAccess.Migrations
                     IsCompleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CompletedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CreatedUser = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Todo", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
                 });
         }
 
@@ -32,6 +47,9 @@ namespace TodoApp.DataAccess.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Todo");
+
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }

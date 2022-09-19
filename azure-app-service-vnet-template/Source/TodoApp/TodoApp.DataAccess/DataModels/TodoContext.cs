@@ -11,6 +11,7 @@ namespace TodoApp.DataAccess.DataModels
             _connection_string = configuration.GetConnectionString("connection_string");
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Todo> Todos { get; set; }
 
         public string Name => nameof(TodoContext);
