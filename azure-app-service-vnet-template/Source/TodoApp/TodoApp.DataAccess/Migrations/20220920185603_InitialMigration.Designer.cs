@@ -12,7 +12,7 @@ using TodoApp.DataAccess.DataModels;
 namespace TodoApp.DataAccess.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    [Migration("20220919141048_InitialMigration")]
+    [Migration("20220920185603_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

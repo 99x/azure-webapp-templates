@@ -5,11 +5,7 @@ namespace TodoApp.DataAccess.DataModels
 {
     public class TodoContext : DbContext
     {
-        private string _connection_string;
-        public TodoContext(IConfiguration configuration)
-        {
-            _connection_string = configuration.GetConnectionString("connection_string");
-        }
+        public TodoContext(DbContextOptions<TodoContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Todo> Todos { get; set; }
@@ -17,8 +13,5 @@ namespace TodoApp.DataAccess.DataModels
         public string Name => nameof(TodoContext);
         public string Provider => nameof(Microsoft.EntityFrameworkCore);
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(_connection_string);
     }
 }
