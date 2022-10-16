@@ -8,14 +8,23 @@ namespace TodoApp.DataAccess.DataModels
     public class Todo
     {
         public long Id { get; set; }
+
         [Required]
         public string Name { get; set; }
+
         public string? Description { get; set; }
+
         public bool IsCompleted { get; set; }
+
         [Required]
         public DateTime CreatedTime { get; set; }
+
         public DateTime? CompletedTime { get; set; }
+
         [Required]
+        [ForeignKey("User")]
         public long CreatedUser { get; set; }
+
+        public virtual User? User { get; set; }
     }
 }
