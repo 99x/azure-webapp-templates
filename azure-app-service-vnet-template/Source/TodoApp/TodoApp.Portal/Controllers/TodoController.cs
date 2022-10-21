@@ -58,7 +58,7 @@ namespace TodoApp.Portal.Controllers
             ModelState.Remove("User");
             if (ModelState.IsValid)
             {
-                todo.CreatedUser = 3;
+                todo.CreatedUser = todo.CreatedUser == 0 ? 1 : todo.CreatedUser;
                 todo.CreatedTime = DateTime.Now;
                 _context.Add(todo);
                 await _context.SaveChangesAsync();
@@ -88,14 +88,12 @@ namespace TodoApp.Portal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,IsCompleted,CompletedTime")] Todo todo)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Description,IsCompleted,CompletedTime,CreatedUser")] Todo todo)
         {
             if (id != todo.Id)
             {
                 return NotFound();
             }
-
-            todo.CreatedUser = 3;
 
             if (ModelState.IsValid)
             {
