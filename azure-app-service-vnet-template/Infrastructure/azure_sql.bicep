@@ -39,4 +39,5 @@ resource vnet_rule 'Microsoft.Sql/servers/virtualNetworkRules@2022-02-01-preview
   properties: {
     virtualNetworkSubnetId: vnet_subnet_id
   }
+  tags: tags
 }
