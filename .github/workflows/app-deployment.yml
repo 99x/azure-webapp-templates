@@ -1,0 +1,111 @@
+name: Build and Deploy .NET Application
+
+env:
+  AZURE_WEBAPP_NAME: 'webapp-template-app'    
+  AZURE_PRODUCTION_WEBAPP_NAME: 'webapp-template-app-production'
+  AZURE_WEBAPP_PACKAGE_PATH: './azure-app-service-vnet-template/Source/TodoApp/TodoApp.Portal/'
+  DOTNET_VERSION: '6.0'
+  DEV_APP_SERVICE_URL: 'https://webapp-template-app.azurewebsites.net'
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - azure-app-service-vnet-template/Source/TodoApp/**  
+    types: 
+      - closed
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    name: build
+    runs-on:  ubuntu-latest
+    
+    steps:
+      # Checkout the repo
+      - uses: actions/checkout@master
+      
+      # Setup .NET SDK
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }} 
+      
+      # Run dotnet build
+      - name: Restore dependencies and build application
+        run: |
+          dotnet restore ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          cd ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          dotnet build --no-restore -c Release
+          dotnet publish -c Release -o ./todoapp
+
+      - name: Publish artifacts to repository location
+        uses: actions/upload-artifact@v2.2.2
+        with: 
+          name: webapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
+
+  deploy-to-dev:
+    needs: build
+    runs-on: ubuntu-latest
+
+    # environment: 
+    #   name: 'development'
+    #   url: ${{ env.DEV_APP_SERVICE_URL }}
+
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: webapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
+
+      # Signing in to Azure
+      - name: Signing in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      # Deploy to Azure Web apps
+      - name: Run Azure webapp deploy action using service principal
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}todoapp
+      
+      - name: Logout
+        run: |
+          az logout
+    
+  # deploy-to-production:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+
+  #   environment: 
+  #     name: 'production'
+  #     url: ${{ env.PRODUCTION_APP_SERVICE_URL }}
+    
+  #   steps:
+  #     - name: Download Build Artifacts
+  #       uses: actions/download-artifact@v2.0.8
+  #       with:
+  #         name: webapp
+  #         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+  #     # Signing in to Azure
+  #     - name: Signing in to Azure
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_PRODUCTION_CREDENTIALS }}
+          
+  #     # Deploy to Azure Web apps
+  #     - name: Run Azure webapp deploy action using service principal
+  #       uses: azure/webapps-deploy@v2
+  #       with: 
+  #         app-name: ${{ env.AZURE_PRODUCTION_WEBAPP_NAME }}
+  #         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      
+  #     - name: Logout
+  #       run: |
+  #         az logout
