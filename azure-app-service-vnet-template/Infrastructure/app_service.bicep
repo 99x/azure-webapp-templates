@@ -1,7 +1,6 @@
 param app_service_name string
 param location string
 param app_service_plan_id string
-param linux_fx_version string
 param vnet_subnet_id string
 param tags object
 
@@ -12,7 +11,7 @@ resource app_service 'Microsoft.Web/sites@2022-03-01' = {
     serverFarmId: app_service_plan_id
     virtualNetworkSubnetId: vnet_subnet_id
     siteConfig: {
-      linuxFxVersion: linux_fx_version
+      linuxFxVersion: 'DOTNETCORE:6.0'
       vnetRouteAllEnabled: true
       http20Enabled: true
     }

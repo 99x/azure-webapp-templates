@@ -1,20 +1,18 @@
-param vnet_name string
-param vnet_addr_prefixes array
 param location string
 param tags object
 
 resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
-  name: vnet_name
+  name: 'todoappvnet01'
   location: location
   properties: {
     addressSpace: {
-      addressPrefixes: vnet_addr_prefixes
+      addressPrefixes: [ '10.0.0.0/16' ]
     }
     subnets: [
       {
-        name: 'todoappsubnet01'
+        name: 'appservicesubnet'
         properties: {
-          addressPrefix: '10.0.0.0/24'
+          addressPrefix: '10.0.1.0/24'
           serviceEndpoints: [
             {
               service: 'Microsoft.Sql'
@@ -25,6 +23,20 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
               name: 'delegation'
               properties: {
                 serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
+        }
+      }
+      {
+        name: 'databasesubnet'
+        properties: {
+          addressPrefix: '10.0.2.0/24'
+          delegations: [
+            {
+              name: 'delegation'
+              properties: {
+                serviceName: 'Microsoft.Sql'
               }
             }
           ]
