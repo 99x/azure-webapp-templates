@@ -43,3 +43,5 @@ resource vnet_rule 'Microsoft.Sql/servers/virtualNetworkRules@2022-02-01-preview
   tags: tags
 }
 
+
+
