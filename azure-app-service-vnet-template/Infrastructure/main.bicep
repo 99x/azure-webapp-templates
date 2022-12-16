@@ -5,6 +5,8 @@ param location string = 'eastasia'
 
 param app_service_plan_name string = 'webapp-template-app-plan'
 param app_service_name string = 'webapp-template-app'
+param sql_server_name string = 'todoappsql01'
+param sql_db_name string = 'todoappsqldb01'
 
 param sql_username string = 'sqlsrvdbadmin'
 @secure()
@@ -48,6 +50,10 @@ module app_service 'app_service.bicep' = {
     app_service_plan_id: app_service_plan.outputs.app_plan_id
     vnet_subnet_id: vnet.outputs.vnet_subnet_id
     tags: tags
+    sql_username: sql_username
+    sql_password: sql_password
+    sql_server_name: sql_server_name
+    sql_db_name: sql_db_name
   }
 }
 
@@ -60,5 +66,7 @@ module sql 'azure_sql.bicep' = {
     location: location
     vnet_subnet_id: vnet.outputs.vnet_subnet_id
     tags: tags
+    sql_server_name: sql_server_name
+    sql_db_name: sql_db_name
   }
 }

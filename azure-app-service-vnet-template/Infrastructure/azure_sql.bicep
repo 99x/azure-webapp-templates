@@ -4,8 +4,8 @@ param sql_password string
 param location string
 param vnet_subnet_id string
 param tags object
-
-var sql_server_name = 'todoappsql01'
+param sql_server_name string
+param sql_db_name string
 
 resource sql_server 'Microsoft.Sql/servers@2022-02-01-preview' = {
   name: sql_server_name
@@ -22,7 +22,7 @@ resource sql_server 'Microsoft.Sql/servers@2022-02-01-preview' = {
 
 resource sql_db 'Microsoft.Sql/servers/databases@2022-02-01-preview' = {
   parent: sql_server
-  name: 'todoappsqldb01'
+  name: sql_db_name
   location: location
   sku: {
     name: 'Basic'
@@ -42,3 +42,6 @@ resource vnet_rule 'Microsoft.Sql/servers/virtualNetworkRules@2022-02-01-preview
   }
   tags: tags
 }
+
+
+
