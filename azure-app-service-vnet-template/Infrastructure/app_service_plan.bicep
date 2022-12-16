@@ -1,6 +1,5 @@
 param app_service_plan_name string
 param location string
-param sku string
 param tags object
 
 resource app_service_plan 'Microsoft.Web/serverfarms@2022-03-01' = {
@@ -10,10 +9,10 @@ resource app_service_plan 'Microsoft.Web/serverfarms@2022-03-01' = {
     reserved: true
   }
   sku: {
-    name: sku
+    name: 'B1'
   }
   kind: 'linux'
-  tags:tags
+  tags: tags
 }
 
 output app_plan_id string = app_service_plan.id
